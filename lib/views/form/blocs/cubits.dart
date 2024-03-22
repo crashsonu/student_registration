@@ -1,9 +1,9 @@
 // All Flutter Built-in Imports Here.
 
 // All Custom Imports Here.
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 // All Native Imports Here.
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:student_registration/views/form/blocs/states.dart';
 import 'package:student_registration/views/form/data.dart';
 
@@ -42,12 +42,14 @@ class RegFormCubit extends Cubit<RegFormState> {
   }
 
   onPressedRemoveSportEvent(String sport, String event) {
+    if (selectedSportEvent.isEmpty) return;
     selectedSportEvent.entries
         .map((entry) => {
               if (sport == entry.key && event == entry.value.name)
                 {selectedSportEvent.remove(sport), emit(SportRemovedState())}
             })
         .toList();
+
   }
 
   onPressedAddSport() {
@@ -120,6 +122,18 @@ class RegFormCubit extends Cubit<RegFormState> {
       return 'Select Date of Birth';
     }
     emit(SelectedDateAliasState());
+    selectedDateAlias = '${dateT.day} / ${dateT.month} / ${dateT.year}';
     return '${dateT.day} / ${dateT.month} / ${dateT.year}';
+  }
+
+  clear() {
+    selectedDate = null;
+    selectedGender = null;
+    currentSelectedSport = null;
+    currentSelectedEvent = null;
+    selectedSportEvent = {};
+    studentAge = null;
+    selectedDateAlias = 'Select Date of Birth';
+    emit(SummaryDoneState());
   }
 }

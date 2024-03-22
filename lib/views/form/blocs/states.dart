@@ -33,3 +33,5 @@ class AddSportErrorState extends RegFormState {
 }
 
 class SportRemovedState extends RegFormState {}
+
+class SummaryDoneState extends RegFormState{}

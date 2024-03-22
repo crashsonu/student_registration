@@ -1,15 +1,16 @@
 // All Flutter Built-in Imports Here.
 import 'package:flutter/material.dart';
-import 'package:student_registration/constants/colors.dart';
-import 'package:student_registration/helpers/helpers.dart';
-import 'package:student_registration/views/form/blocs/cubits.dart';
-import 'package:student_registration/views/form/blocs/states.dart';
-import 'package:student_registration/views/form/data.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 // All Custom Imports Here.
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 // All Native Imports Here.
+import 'package:student_registration/constants/colors.dart';
+import 'package:student_registration/constants/theme.dart';
+import 'package:student_registration/helpers/helpers.dart';
+import 'package:student_registration/views/form/data.dart';
+import 'package:student_registration/views/form/blocs/cubits.dart';
+import 'package:student_registration/views/form/blocs/states.dart';
 
 // All Attributes or Constants Here.
 
@@ -84,9 +85,13 @@ class _RegistrationFormState extends State<RegistrationForm> {
                       const InputDecoration(labelText: 'Contact Number'),
                   keyboardType: TextInputType.phone,
                   validator: (value) {
-                    if (value == null || value.isEmpty || value.length != 10) {
+                    if (value == null || value.isEmpty) {
                       return 'Please enter your contact number';
                     }
+                    if (value.length != 10) {
+                      return 'Enter valid 10 digit contact number';
+                    }
+
                     return null;
                   },
                 ),
@@ -96,12 +101,12 @@ class _RegistrationFormState extends State<RegistrationForm> {
                   decoration: const InputDecoration(labelText: 'Email Address'),
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) {
-                    if (value == null ||
-                        value.isEmpty ||
-                        !value.contains('@')) {
+                    if (value == null || value.isEmpty) {
                       return 'Please enter your email address';
                     }
-                    // Add email validation if needed
+                    if (!value.contains('@')) {
+                      return 'Invalid email should contain @';
+                    }
                     return null;
                   },
                 ),
@@ -112,9 +117,13 @@ class _RegistrationFormState extends State<RegistrationForm> {
                       const InputDecoration(labelText: 'Aadhar Card Number'),
                   keyboardType: TextInputType.number,
                   validator: (value) {
-                    if (value == null || value.isEmpty || value.length != 12) {
+                    if (value == null || value.isEmpty) {
                       return 'Please enter your Aadhar card number';
                     }
+                    if (value.length != 12) {
+                      return 'Invalid aadhar enter 12 digit valid number ';
+                    }
+
                     return null;
                   },
                 ),
@@ -126,7 +135,6 @@ class _RegistrationFormState extends State<RegistrationForm> {
                         Radio<String>(
                             value: 'Male',
                             groupValue: regFormCubit.selectedGender,
-                            // Ensure this matches the genderValue provided by the Cubit
                             onChanged: (val) {
                               regFormCubit.onGenderSelection(val!);
                             }),
@@ -183,7 +191,11 @@ class _RegistrationFormState extends State<RegistrationForm> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Divider(color: Colors.indigoAccent, thickness: 3, height: 100,),
+                      const Divider(
+                        color: Colors.indigoAccent,
+                        thickness: 3,
+                        height: 100,
+                      ),
                       const Row(
                         children: [
                           Padding(
@@ -218,17 +230,22 @@ class _RegistrationFormState extends State<RegistrationForm> {
                             labelText: 'Parent\'s Contact Number'),
                         keyboardType: TextInputType.phone,
                         validator: (value) {
-                          if (value == null ||
-                              value.isEmpty ||
-                              value.length != 10) {
+                          if (value == null || value.isEmpty) {
                             return 'Please enter parent\'s contact number';
+                          }
+                          if (value.length != 10) {
+                            return 'Enter 10 digit valid contact number';
                           }
                           return null;
                         },
                       ),
                     ],
                   ),
-                const Divider(color: Colors.indigoAccent, thickness: 3, height: 100,),
+                const Divider(
+                  color: Colors.indigoAccent,
+                  thickness: 3,
+                  height: 100,
+                ),
                 const Text(
                   'Select Sport',
                   style: TextStyle(fontSize: 18, color: AppColors.formTitle),
@@ -300,35 +317,44 @@ class _RegistrationFormState extends State<RegistrationForm> {
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 15),
-                      Column(
-                          children: regFormCubit.selectedSportEvent.entries
-                              .map((entry) {
-                        String sport = entry.key;
-                        Event event = entry.value;
-                        return Chip(
-                          backgroundColor: Colors.indigoAccent.withOpacity(0.8),
-                          label: Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  "$sport - ${event.name} (${event.gender} ${event.minAge}-${event.maxAge}/yrs)",
-                                  style: const TextStyle(
-                                      color: Colors.white, fontSize: 15),
+                      if (regFormCubit.selectedSportEvent.isNotEmpty)
+                        Column(
+                            children: regFormCubit.selectedSportEvent.entries
+                                .map((entry) {
+                          String sport = entry.key;
+                          Event event = entry.value;
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Chip(
+                                      backgroundColor:
+                                          Colors.indigoAccent.withOpacity(0.8),
+                                      label: Text(
+                                        "$sport - ${event.name * 4} (${event.gender} ${event.minAge}-${event.maxAge}/yrs)",
+                                        style: const TextStyle(
+                                            color: Colors.white, fontSize: 15),
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                              IconButton(
-                                  onPressed: () {
-                                    regFormCubit.onPressedRemoveSportEvent(
-                                        sport, event.name);
-                                  },
-                                  icon: const Icon(
-                                    Icons.close,
-                                    color: Colors.white,
-                                  ))
-                            ],
-                          ),
-                        );
-                      }).toList()),
+                                IconButton(
+                                    onPressed: () {
+                                      print(88888888);
+                                      regFormCubit.onPressedRemoveSportEvent(
+                                          sport, event.name);
+                                    },
+                                    icon: const Icon(
+                                      Icons.close,
+                                      color: Colors.redAccent,
+                                    ))
+                              ],
+                            ),
+                          );
+                        }).toList()),
                     ],
                   ),
                 const SizedBox(height: 50),
@@ -378,20 +404,12 @@ class _RegistrationFormState extends State<RegistrationForm> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text('Registration Summary',
-                  style: TextStyle(color: Colors.indigo, fontSize: 18)),
-              TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('Close'))
-            ],
-          ),
+          backgroundColor: Colors.indigoAccent,
+          title: const Text('Registration Summary',
+              style: TextStyle(color: Colors.white, fontSize: 18)),
           actions: <Widget>[
             Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text('Student Details', style: summaryTitleStyle),
                 TitleValueRow(
@@ -407,14 +425,23 @@ class _RegistrationFormState extends State<RegistrationForm> {
                     keyText: 'Gender', valueText: regFormCubit.selectedGender!),
                 TitleValueRow(
                     keyText: 'DOB', valueText: regFormCubit.selectedDateAlias),
+                const SizedBox(height: 20),
+                const Divider(color: Colors.white, thickness: 1),
                 if (regFormCubit.studentAge! < 18)
-                  Text('Parent Details', style: summaryTitleStyle),
-                TitleValueRow(
-                    keyText: "Parent's Name",
-                    valueText: parentNameController.text),
-                TitleValueRow(
-                    keyText: "Parent's Number",
-                    valueText: parentContactNumberController.text),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Parent Details', style: summaryTitleStyle),
+                      TitleValueRow(
+                          keyText: "Parent's Name",
+                          valueText: parentNameController.text),
+                      TitleValueRow(
+                          keyText: "Parent's Number",
+                          valueText: parentContactNumberController.text),
+                      const SizedBox(height: 20),
+                      const Divider(color: Colors.white, thickness: 1),
+                    ],
+                  ),
                 Text('Selected Sport Details', style: summaryTitleStyle),
                 Column(
                   children:
@@ -424,6 +451,23 @@ class _RegistrationFormState extends State<RegistrationForm> {
                         valueText:
                             '${entry.value.name} (${entry.value.gender} ${entry.value.minAge} ${entry.value.maxAge}/yrs)');
                   }).toList(),
+                ),
+                const SizedBox(height: 15),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        _formKey.currentState!.save();
+                        nameController.clear();
+                        contactNumberController.clear();
+                        emailController.clear();
+                        aadharController.clear();
+                        parentNameController.clear();
+                        parentContactNumberController.clear();
+                        regFormCubit.clear();
+                      },
+                      child: const Text('Register New Student')),
                 )
               ],
             ),
@@ -452,17 +496,19 @@ class TitleValueRow extends StatelessWidget {
         children: [
           Text(
             keyText,
-            style: const TextStyle(fontSize: 15, color: Colors.grey),
+            style: const TextStyle(fontSize: 15, color: Colors.white),
           ),
           const SizedBox(width: 10),
-          const Text(':'),
+          const Text(
+            ':',
+            style: TextStyle(color: Colors.white),
+          ),
           const SizedBox(width: 10),
           Expanded(
-              child: Text(valueText, style: const TextStyle(fontSize: 15))),
+              child: Text(valueText,
+                  style: const TextStyle(fontSize: 15, color: Colors.white))),
         ],
       ),
     );
   }
 }
-
-TextStyle summaryTitleStyle = TextStyle(color: Colors.blueAccent, fontSize: 17);

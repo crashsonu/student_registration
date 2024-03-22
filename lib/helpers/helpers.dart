@@ -12,7 +12,7 @@ void showMessage(BuildContext context, String message, Color? color) {
     SnackBar(
       backgroundColor: color ?? Colors.black,
       content: Text(message),
-      duration: const Duration(seconds: 2),
+      duration: const Duration(seconds: 3),
     ),
   );
 }
