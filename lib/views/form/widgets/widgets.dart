@@ -329,7 +329,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
                                       backgroundColor:
                                           Colors.indigoAccent.withOpacity(0.8),
                                       label: Text(
-                                        "$sport - ${event.name * 4} (${event.gender} ${event.minAge}-${event.maxAge}/yrs)",
+                                        "$sport - ${event.name} (${event.gender} ${event.minAge}-${event.maxAge}/yrs)",
                                         style: const TextStyle(
                                             color: Colors.white, fontSize: 15),
                                       ),
@@ -338,7 +338,6 @@ class _RegistrationFormState extends State<RegistrationForm> {
                                 ),
                                 IconButton(
                                     onPressed: () {
-                                      print(88888888);
                                       regFormCubit.onPressedRemoveSportEvent(
                                           sport, event.name);
                                     },
@@ -398,75 +397,80 @@ class _RegistrationFormState extends State<RegistrationForm> {
     return showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.indigoAccent,
-          title: const Text('Registration Summary',
-              style: TextStyle(color: Colors.white, fontSize: 18)),
-          actions: <Widget>[
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Student Details', style: summaryTitleStyle),
-                TitleValueRow(
-                    keyText: 'Student Name', valueText: nameController.text),
-                TitleValueRow(
-                    keyText: 'Contact Number',
-                    valueText: contactNumberController.text),
-                TitleValueRow(
-                    keyText: 'Email', valueText: emailController.text),
-                TitleValueRow(
-                    keyText: 'Aadhar Number', valueText: aadharController.text),
-                TitleValueRow(
-                    keyText: 'Gender', valueText: regFormCubit.selectedGender!),
-                TitleValueRow(
-                    keyText: 'DOB', valueText: regFormCubit.selectedDateAlias),
-                const SizedBox(height: 20),
-                const Divider(color: Colors.white, thickness: 1),
-                if (regFormCubit.studentAge! < 18)
+        return SingleChildScrollView(
+          child: AlertDialog(
+            backgroundColor: Colors.indigoAccent,
+            title: const Text('Registration Summary',
+                style: TextStyle(color: Colors.white, fontSize: 18)),
+            actions: <Widget>[
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Student Details', style: summaryTitleStyle),
+                  TitleValueRow(
+                      keyText: 'Student Name', valueText: nameController.text),
+                  TitleValueRow(
+                      keyText: 'Contact Number',
+                      valueText: contactNumberController.text),
+                  TitleValueRow(
+                      keyText: 'Email', valueText: emailController.text),
+                  TitleValueRow(
+                      keyText: 'Aadhar Number',
+                      valueText: aadharController.text),
+                  TitleValueRow(
+                      keyText: 'Gender',
+                      valueText: regFormCubit.selectedGender!),
+                  TitleValueRow(
+                      keyText: 'DOB',
+                      valueText: regFormCubit.selectedDateAlias),
+                  const SizedBox(height: 20),
+                  const Divider(color: Colors.white, thickness: 1),
+                  if (regFormCubit.studentAge! < 18)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Parent Details', style: summaryTitleStyle),
+                        TitleValueRow(
+                            keyText: "Parent's Name",
+                            valueText: parentNameController.text),
+                        TitleValueRow(
+                            keyText: "Parent's Number",
+                            valueText: parentContactNumberController.text),
+                        const SizedBox(height: 20),
+                        const Divider(color: Colors.white, thickness: 1),
+                      ],
+                    ),
+                  Text('Selected Sport Details', style: summaryTitleStyle),
                   Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Parent Details', style: summaryTitleStyle),
-                      TitleValueRow(
-                          keyText: "Parent's Name",
-                          valueText: parentNameController.text),
-                      TitleValueRow(
-                          keyText: "Parent's Number",
-                          valueText: parentContactNumberController.text),
-                      const SizedBox(height: 20),
-                      const Divider(color: Colors.white, thickness: 1),
-                    ],
+                    children:
+                        regFormCubit.selectedSportEvent.entries.map((entry) {
+                      return TitleValueRow(
+                          keyText: entry.key,
+                          valueText:
+                              '${entry.value.name} (${entry.value.gender} ${entry.value.minAge} ${entry.value.maxAge}/yrs)');
+                    }).toList(),
                   ),
-                Text('Selected Sport Details', style: summaryTitleStyle),
-                Column(
-                  children:
-                      regFormCubit.selectedSportEvent.entries.map((entry) {
-                    return TitleValueRow(
-                        keyText: entry.key,
-                        valueText:
-                            '${entry.value.name} (${entry.value.gender} ${entry.value.minAge} ${entry.value.maxAge}/yrs)');
-                  }).toList(),
-                ),
-                const SizedBox(height: 15),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        _formKey.currentState!.save();
-                        nameController.clear();
-                        contactNumberController.clear();
-                        emailController.clear();
-                        aadharController.clear();
-                        parentNameController.clear();
-                        parentContactNumberController.clear();
-                        regFormCubit.clear();
-                      },
-                      child: const Text('Register New Student')),
-                )
-              ],
-            ),
-          ],
+                  const SizedBox(height: 15),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          _formKey.currentState!.save();
+                          nameController.clear();
+                          contactNumberController.clear();
+                          emailController.clear();
+                          aadharController.clear();
+                          parentNameController.clear();
+                          parentContactNumberController.clear();
+                          regFormCubit.clear();
+                        },
+                        child: const Text('Register New Student')),
+                  )
+                ],
+              ),
+            ],
+          ),
         );
       },
     );
