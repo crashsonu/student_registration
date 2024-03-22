@@ -1,12 +1,11 @@
 // All Flutter Built-in Imports Here.
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:student_registration/constants/colors.dart';
-import 'package:student_registration/views/form/blocs/cubits.dart';
 
 // All Custom Imports Here.
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 // All Native Imports Here.
+import 'package:student_registration/views/form/blocs/cubits.dart';
 import 'package:student_registration/views/form/widgets/widgets.dart';
 
 // All Attributes or Constants Here.

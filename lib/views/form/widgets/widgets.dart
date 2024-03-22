@@ -87,11 +87,9 @@ class _RegistrationFormState extends State<RegistrationForm> {
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your contact number';
+                    } else if (value.length < 10 || value.length > 10) {
+                      return 'Enter a valid 10-digit contact number';
                     }
-                    if (value.length != 10) {
-                      return 'Enter valid 10 digit contact number';
-                    }
-
                     return null;
                   },
                 ),
@@ -103,8 +101,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your email address';
-                    }
-                    if (!value.contains('@')) {
+                    } else if (!value.contains('@')) {
                       return 'Invalid email should contain @';
                     }
                     return null;
@@ -119,8 +116,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your Aadhar card number';
-                    }
-                    if (value.length != 12) {
+                    } else if (value.length != 12) {
                       return 'Invalid aadhar enter 12 digit valid number ';
                     }
 
@@ -232,8 +228,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter parent\'s contact number';
-                          }
-                          if (value.length != 10) {
+                          } else if (value.length < 10 || value.length > 10) {
                             return 'Enter 10 digit valid contact number';
                           }
                           return null;
